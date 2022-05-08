@@ -16,7 +16,7 @@
 % Outputs: * TCold [K]: Satellite temperature in cold case
 %          * THot [K]: Satellite temperature in hot case
 
-function [TCold, THot, alphaEpsilon] = ThermalDesign(Orbit, A, minRequirements, maxRequirements, Q, showplot)
+function [TCold, THot, alphaEpsilon] = ThermalDesign(Orbit, Mission, A, minRequirements, maxRequirements, Q, showplot)
 %% THERMAL ENVIRONMENT
 % Solar radiation
 Js = parameters.P/(4*pi*(parameters.D*1000)^2); % [W/m^2] Solar radiation intensity
@@ -43,29 +43,42 @@ Asolar = A(1); % [m^2] Projected area receiving solar radiation
 Aalbedo = A(2); % [m^2] Projected area receiving albedo radiation
 Aplanetary = A(3); % [m^2] Projected area receiving planetary radiation
 Asurface = A(4); % [m^2] Total area
+CAl = 960; % [J/(kg*K)] Aluminium specific heat
 
-for alphaEpsilon = 0:0.001:1
-    if Q ~= 0
-        for epsilon = 0.001:0.001:1
+for alpha = 0:0.001:1
+    for epsilon = 0:0.001:1
+        alphaEpsilon = alpha/epsilon;
+        if Q ~= 0
             TCold = (Aplanetary*Jp/(Asurface*parameters.sigma) + Q/(Asurface*parameters.sigma*epsilon) + ...
-                (Asolar*Js + Aalbedo*Ja)/(Asurface*parameters.sigma)*(alphaEpsilon)).^(1/4); % [K] Spacecraft temperature
-            THot = (Aplanetary*Jp/(Asurface*parameters.sigma) + Q/(Asurface*parameters.sigma*epsilon) + ...
                 Aalbedo*Ja/(Asurface*parameters.sigma)*(alphaEpsilon)).^(1/4); % [K] Spacecraft temperature
+            THot = (Aplanetary*Jp/(Asurface*parameters.sigma) + Q/(Asurface*parameters.sigma*epsilon) + ...
+                (Asolar*Js + Aalbedo*Ja)/(Asurface*parameters.sigma)*(alphaEpsilon)).^(1/4); % [K] Spacecraft temperature
+        else
+            THot = (Aplanetary*Jp/(Asurface*parameters.sigma) + ...
+                (Asolar*Js + Aalbedo*Ja)/(Asurface*parameters.sigma)*(alphaEpsilon)).^(1/4); % [K] Spacecraft temperature
+            TCold = THot;
+            TNew = parameters.Tb;
+            dTau = 0.1;
+            tauTrans = 0;
+            while abs(TCold - TNew) >= 1e-6
+                disp(TNew)
+                TCold = TNew;
+                TNew = -dTau/(Mission.m*CAl)*(Ja*alpha*Aalbedo + Jp*epsilon*Aplanetary - parameters.sigma*epsilon*TCold^4) + TCold;
+                tauTrans = tauTrans + dTau;
+                if tauTrans > Mission.tau_eclipse
+                    fprintf('--------------------')
+                    fprintf(['<strong> Absorptivity/Emissivity:</strong> alpha/epsilon = ' num2str(alphaEpsilon) ' [-]\n'])
+                    fprintf('<strong>Thermal balance didn''t converge.</strong>\n');
+                    break;
+                end
+            end
         end
-    else
-        TCold = (Aplanetary*Jp/(Asurface*parameters.sigma) + ...
-        (Asolar*Js + Aalbedo*Ja)/(Asurface*parameters.sigma)*(alphaEpsilon)).^(1/4); % [K] Spacecraft temperature
-    THot = (Aplanetary*Jp/(Asurface*parameters.sigma) + ...
-        Aalbedo*Ja/(Asurface*parameters.sigma)*(alphaEpsilon)).^(1/4); % [K] Spacecraft temperature
     end
     
     if TCold > mean(minRequirements) && THot < mean(maxRequirements)
         fprintf(['<strong> Absorptivity/Emissivity:</strong>           alpha/epsilon = ' num2str(alphaEpsilon) ' [-]\n'])
         fprintf(['<strong> Cold case temperature:</strong>             TCold = ' num2str(TCold) ' K\n'])
         fprintf(['<strong> Hot case temperature:</strong>              THot = ' num2str(THot) ' K\n'])
-        break;
-    end
-    if TCold > mean(minRequirements) && THot < mean(maxRequirements)
         break;
     end
 end
