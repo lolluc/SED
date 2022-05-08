@@ -18,14 +18,13 @@ Mission.m = 12;
 powRequirements = [3.5 0.01 0.06 0.65 3.22; 0 0 0.06 6.5 3.22]; 
 
 FOV = 9;
-height = 500;               % must change with hugo
+height = 500;               % must change 
 %% Run codes
 
 addpath Mars_Landform
 
 Orbit_parameters_polar = Orbit_func (FOV, height, 'polar')
-Orbit_parameters_sunsync = Orbit_func (FOV, height, 'sun-sync')
+Orbit_parameters_sunsync = Orbit_func (FOV, height, 'sun_sync')
 
-%%
 [TCold, THot, alphaEpsilon] = ThermalDesign(Orbit, Mission, A, minRequirements, maxRequirements, Q, 1);
 Array = PowerBudget(Mission, powRequirements);
