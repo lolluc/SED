@@ -4,17 +4,12 @@
 % Description: computes the temperature of the satellite in both cold and
 %   hot cases by performing a power balance (1 node).
 % Inputs: * Orbit: structure containing orbit parameters
-%         * A [m^2] : array containing surface areas (1. projected area 
-%              receiving solar radiation, 2. projected area receiving 
-%              albedo radiation, 3. projected area receiving planetary 
-%              radiation, 4. total area)
+%         * A:     array containing surface areas (1. projected area 
+%                  receiving solar radiation, 2. projected area receiving 
+%                  albedo radiation, 3. projected area receiving planetary 
+%                  radiation, 4. total area)
 %         * minRequirements: array containing minimum temperature
-%                            requirements for each component
-%         * maxRequirements: array containing maximum temperature
-%                            requirements for each component
-%         * showplot: boolean (1 to show the plots, 0 to hide them)
-% Outputs: * TCold [K]: Satellite temperature in cold case
-%          * THot [K]: Satellite temperature in hot case
+%         requirements 
 
 function [TCold, THot] = ThermalDesign(Orbit, A, minRequirements, maxRequirements, Q, showplot)
 %% THERMAL ENVIRONMENT
@@ -45,10 +40,10 @@ Aplanetary = A(3); % [m^2] Projected area receiving planetary radiation
 Asurface = A(4); % [m^2] Total area
 for alpha = 0:0.001:1
     for epsilon = 0:0.001:1
-        TCold = (Aplanetary*Jp/(Asurface*parameters.sigma) + Q/(Asurface*parameters.sigma*epsilon) + ...
-            (Asolar*Js + Aalbedo*Ja)/(Asurface*parameters.sigma)*(alpha/epsilon)).^(1/4); % [K] Spacecraft temperature
-        THot = (Aplanetary*Jp/(Asurface*parameters.sigma) + Q/(Asurface*parameters.sigma*epsilon) + ...
-            Aalbedo*Ja/(Asurface*parameters.sigma)*(alpha/epsilon)).^(1/4); % [K] Spacecraft temperature
+        TCold = (Aplanetary*Jp/(Asurface*sigma) + Q/(Asurface*sigma*epsilon) + ...
+            (Asolar*Js + Aalbedo*Ja)/(Asurface*sigma)*(alpha/epsilon)).^(1/4); % [K] Spacecraft temperature
+        THot = (Aplanetary*Jp/(Asurface*sigma) + Q/(Asurface*sigma*epsilon) + ...
+            Aalbedo*Ja/(Asurface*sigma)*(alpha/epsilon)).^(1/4); % [K] Spacecraft temperature
         
         if TCold > max(minRequirements) && TCold < min(maxRequirements) && THot > max(minRequirements) && THot < min(maxRequirements)
             fprintf(['<strong> Absorptivity:     alpha = ' num2str(alpha) ' [-]\n'])

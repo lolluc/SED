@@ -8,7 +8,7 @@
 % Outputs: * Array: structure containing array parameters
 
 function Array = PowerBudget(Mission, Requirements)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% To be updated %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% To be updated
 etaBCR = 0.9;
 etaBDR = 0.9;
 etaAR = 0.9;
@@ -19,10 +19,12 @@ D = 0.1; % Degradation factor (see 10.3.1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 etaCell = 0.9; % Solar cell efficiency
+
 deltaTheta = 1; % [°] Array pointing error with respect to the sun
 etaPacking = 0.9; % [-] Cell packing efficiency
 
 S = parameters.P/(4*pi*(parameters.D*1000)^2); % [W/m^2] Solar radiation intensity
+
 eta = etaBCR*etaBDR*etaAR;
 
 PCharge = 1/eta*sum(Requirements(:,1))*Mission.tau_eclipse/Mission.tau_sun;
