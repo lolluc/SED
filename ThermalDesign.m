@@ -45,10 +45,7 @@ Aplanetary = A(3); % [m^2] Projected area receiving planetary radiation
 Asurf = A(4); % [m^2] Total area
 %CAl = 960; % [J/(kg*K)] Aluminium specific heat
 
-TCold = (-2.7^4 + 1/(parameters.sigma*Asurf*epsilon)*(Ja*alpha*Aalbedo + ...
-    Jp*parameters.eps*Aplanetary + Q))^(1/4); % [K] Spacecraft temperature in cold case
-THot = (-2.7^4 + 1/(parameters.sigma*Asurf*epsilon)*(Js*alpha*Asolar + Ja*alpha*Aalbedo + ...
-    Jp*parameters.eps*Aplanetary + Q))^(1/4); % [K] Spacecraft temperature in hot case
+THot = (Aplanetary*Jp/Asurface*parameters.sigma); 
     
 if TCold > max(minRequirements) && THot < min(maxRequirements)
     fprintf(['<strong> Absorptivity:</strong>                      alpha = ' num2str(alpha) ' [-]\n'])
