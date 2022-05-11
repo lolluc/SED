@@ -21,7 +21,7 @@ lon_0 = 0;              %Initial longitude
 % Mars parameters
 j2 = 0.00196045;
 
-run('AssignConstants_Orbiter_mro')
+run('AssignConstants_Orbiter')
 a_mro = myConst.a_mro;
 e_mro = myConst.e_mro;
 i_mro = myConst.i_mro;
