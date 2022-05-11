@@ -35,17 +35,17 @@ A=imread('MarsTexture.jpg');
 image('XData',[-180 180],'YData',[90 -90],'CData',A);
 hold on
 plot(lon,lat,'g','linewidth',1.2);
-plot(lon(1),lat(1),'go','linewidth',2)
+plot(lon(1),lat(1),'go','linewidth',2);
 plot(lon(length(lon)),lat(length(lat)),'gs','linewidth',2)
 % s = patch([x1 fliplr(x1)], [y1 fliplr(y2)], 'b');
-plot(x1,y1,'b','linewidth',1.2)
-plot(x2,y2,'b','linewidth',1.2)
-xlim([-180 180])
-ylim([-90 90])
-xlabel('Longitude [deg]')
-ylabel('Latitude [deg]')
-legend('Ground track','Start','End', 'Field of View', 'Location','best','Orientation','horizontal')
-title('Ground track plot')
+plot(x1,y1,'b','linewidth',1.2);
+plot(x2,y2,'b','linewidth',1.2);
+xlim([-180 180]);
+ylim([-90 90]);
+xlabel('Longitude [deg]');
+ylabel('Latitude [deg]');
+legend('Ground track','Start','End', 'Field of View', 'Location','best','Orientation','horizontal');
+title('Ground track plot');
 s.FaceVertexAlphaData = 1;
 s.FaceAlpha = 'flat' ; 
 hold off
